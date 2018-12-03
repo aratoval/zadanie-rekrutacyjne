@@ -1,6 +1,14 @@
 #!/usr/bin/env  python3
 from flask import Flask, request
+from urllib import request as url_request
+from bs4 import BeautifulSoup
 
+
+def get_text(url='http://utopiac.ddns.net:8000'):
+    page = url_request.urlopen(url)
+    content_page = page.read()
+    soup = BeautifulSoup(content_page, "html")
+    print(soup.get_text())
 
 app = Flask(__name__)
 
@@ -35,4 +43,5 @@ def login():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", debug=True, port=5000)
+#    app.run(host="0.0.0.0", debug=True, port=5000)
+    get_text()
