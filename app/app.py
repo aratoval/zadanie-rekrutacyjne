@@ -10,6 +10,7 @@ def get_text(url='http://utopiac.ddns.net:8000'):
     soup = BeautifulSoup(content_page, "html")
     print(soup.get_text())
 
+
 app = Flask(__name__)
 
 
