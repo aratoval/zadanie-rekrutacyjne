@@ -1,17 +1,18 @@
 #!/usr/bin/env  python3
-from os import curdir
+from os import curdir, path, mkdir
 from flask import Flask, jsonify, request, make_response
-from urllib import request as url_request
+from urllib3 import PoolManager
 from bs4 import BeautifulSoup
 import threading
-import queue
 
 
 class ContentGetter:
 
     work_type_dict = {0: "unknown", 1: "get text", 2: "get image", 3: "get all"}
     current_status = ""
+    path_to_data = ""
     workers_list = []
+    root_dir_path = ""
 
     def __init__(self, work_type, url):
         ContentGetter.workers_list.append(id(self))
@@ -19,7 +20,7 @@ class ContentGetter:
         self.work_type = work_type
         self.url = url
         self.current_status = 'running'
-        # self.work()
+        self.root_dir_path = curdir
 
     def serialize(self):
         return {
@@ -32,22 +33,43 @@ class ContentGetter:
 
     def get_text(self):
         try:
-            page = url_request.urlopen(self.url)
-            content_page = page.read()
-            soup = BeautifulSoup(content_page, "html.parser")
-            self.current_status = "finished"
-            return soup
+            destiny = "text/{}.txt".format(self.id)
+            with open(path.join(self.root_dir_path, destiny), "w") as f:
+                page = PoolManager().request("GET", self.url)
+                content_page = page.data
+                soup = BeautifulSoup(content_page, "html.parser").get_text()
+                f.writelines(soup)
+                self.current_status = "finished"
+            return
         except Exception as e:
             self.current_status = "error: {}".format(e)
 
     def get_image(self):
         try:
-            page = url_request.urlopen(self.url)
-            content_page = page.read()
+            destiny = "image/{}".format(self.id)
+            if not path.exists(destiny):
+                mkdir(destiny)
+
+            page = PoolManager()\
+                .request("GET", self.url)
+            content_page = page.data
             soup = BeautifulSoup(content_page, "html.parser")
-            image_list = soup.find_all('img')
+            images_list = soup.find_all('img')
+            for image in images_list:
+                with open(path.join(destiny,
+                                    image['src'].split("/")[-1]),
+                          "wb") as out_image:
+                    http = PoolManager().request(
+                            "GET",
+                            self.url + image['src'],
+                            preload_content = False)
+                    while True:
+                        data = http.read(1024)
+                        if not data:
+                            break
+                        out_image.write(data)
             self.current_status = "finished"
-            return image_list
+            return
         except Exception as e:
             self.current_status = "error: {}".format(e)
 
@@ -99,6 +121,12 @@ def create_task_image():
     t.start()
     tasks_dict[id(a)] = a
     return jsonify(a.serialize())
+
+
+@app.route("/api/tasks/downloads/<id>", methods=["GET"])
+def downloads(id):
+
+    return
 
 
 @app.errorhandler(404)
