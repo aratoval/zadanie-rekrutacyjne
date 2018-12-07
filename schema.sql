@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS task;
+DROP TABLE IF EXISTS path;
+
+CREATE TABLE task (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  task_type SMALLINT NOT NULL,
+  url TEXT NOT NULL,
+  status 
+);
+
+CREATE TABLE path (
+  task_id INTEGER NOT NULL,
+  path TEXT NOT NULL,
+  FOREIGN KEY (task_id) REFERENCES task (id)
+)
