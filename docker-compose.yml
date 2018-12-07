@@ -1,8 +1,11 @@
 version: "2"
 services:
-  app:
-    build: .
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./app:/app
+    worker:
+        build: ./worker
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/worker
+        environment:
+            - LC_ALL=C.UTF-8
+            - LANG=C.UTF-8

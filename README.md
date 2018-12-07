@@ -35,3 +35,23 @@ Zadanie polega na stworzeniu mikroserwisu wspierającego pracę programistów za
 
 
 **Odpowiednia architektura tego systemu i design API są ważniejsze niż dogłębna implementacja**
+
+
+## 6. Opis mikroserwisu
+
+**Endpoints API:**  
+* *GET <url>/api/tasks* -> zwraca listę słowników opisujących zadania
+* *GET <url>/api/tasks/id* -> zwraca słownik opisujący zadanie o id
+
+* *POST <url>/api/text/url* -> zlecenie pobrania tekstu ze strony o adresie url
+* *POST <url>/api/image/url* -> zlecenie pobrania obrazków ze strony o adresie url
+* *GET <url>/api/downloads/id* -> zwraca adresy do pobrania plików z zadania o id
+
+
+## 7. TODO
+* uruchomić testy
+* uruchomić cykliczne uruchamianie task_runner.py
+* dodać uruchamianie mikroserwisu na serwerze produkcyjnym
+* dodać nowe endpoint np. do usuwania zadań lub ich wznawiania
+* dodać wysyłanie ściągniętych plików zamiast linków
+* zmienić bazę danych - sqlite nie współdziała z kilkoma jednoczesnymi zapytaniami modyfikującymi 
