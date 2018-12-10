@@ -101,9 +101,6 @@ text_tasks_list = Tasks.query.filter_by(
 image_tasks_list = Tasks.query.filter_by(
         status='added').filter_by(task_type=1).all()
 
-# if text_tasks_list:
-#     for task in text_tasks_list:
-#         get_texts(task)
 
 with ThreadPoolExecutor() as executor:
     futures_que = 0
@@ -119,10 +116,3 @@ with ThreadPoolExecutor() as executor:
             task = futures_que[future]
 
 db.session.commit()
-# if image_tasks_list:
-#     with Pool() as image_pool:
-#         image_multiple_results = [
-#             image_pool.apply_async(get_images, ()) for i in image_tasks_list]
-#
-
-
