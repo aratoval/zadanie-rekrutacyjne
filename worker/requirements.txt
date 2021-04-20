@@ -21,7 +21,7 @@ MarkupSafe==1.1.0
 more-itertools==4.3.0
 pathlib2==2.3.3
 pluggy==0.8.0
-py==1.7.0
+py==1.10.0
 pycparser==2.19
 pytest==4.0.1
 pytest-flask==0.14.0
